@@ -88,12 +88,12 @@ class Tile
   end
 
   def to_s
-    return '   ' unless @revealed
+    return ' * ' unless @revealed
     return ' f ' if @flagged
     return ' X ' if @is_bomb
     return " #{neighbour_bomb_count} " if fringe?
 
-    ' _ '
+    ' _ ' # Normal squares if revealed
   end
 
   def inspect
