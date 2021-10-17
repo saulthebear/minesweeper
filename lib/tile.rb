@@ -7,8 +7,9 @@ class Tile
 
   attr_reader :is_bomb, :flagged, :revealed, :fringe
 
-  def initialize(board)
+  def initialize(board, position)
     @board = board
+    @position = position
     @is_bomb = should_i_be_a_bomb?
     @flagged = false
     @revealed = false
@@ -50,6 +51,9 @@ class Tile
   end
 
   def inspect
-    "<Tile @is_bomb=#{@is_bomb} @flagged=#{@flagged} @revealed=#{@revealed}>"
+    "<Tile @position: [#{@position.row},#{@position.col}]
+           @is_bomb=#{@is_bomb}
+           @flagged=#{@flagged}
+           @revealed=#{@revealed}>"
   end
 end

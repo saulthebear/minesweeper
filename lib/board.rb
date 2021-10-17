@@ -1,4 +1,5 @@
 require_relative 'tile'
+require_relative 'position'
 
 # Holds a grid of tiles.
 class Board
@@ -6,12 +7,19 @@ class Board
 
   def initialize(size = 9)
     @size = size
-    @grid = create_grid
+    create_grid
   end
 
   def create_grid
-    Array.new(@size) do 
-      Array.new(@size) { Tile.new(self) }
+    @grid = []
+    @size.times do |row_index|
+      row = []
+      @size.times do |col_index|
+        position = Position.new(row_index, col_index)
+        tile = Tile.new(self, position)
+        row << tile
+      end
+      @grid << row
     end
   end
 
