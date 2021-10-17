@@ -40,7 +40,7 @@ class Board
         # debugger
         # neighbour_bomb_count = 1
         neighbour_bomb_count = tile.neighbour_bomb_count
-        if tile.is_bomb
+        if tile.bomb?
           ' X '
         elsif neighbour_bomb_count > 0
           " #{neighbour_bomb_count} "

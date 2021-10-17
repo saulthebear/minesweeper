@@ -5,7 +5,7 @@ require_relative 'board'
 # User can flag or reveal a tile.
 class Tile
 
-  attr_reader :is_bomb, :flagged, :revealed, :fringe
+  attr_reader :flagged, :revealed, :fringe
 
   def initialize(board, position)
     @board = board
@@ -21,6 +21,10 @@ class Tile
   def should_i_be_a_bomb?
     chance = 0.12
     rand <= chance
+  end
+
+  def bomb?
+    @is_bomb
   end
 
   # Reveals to tile, so it can be displayed to the user
