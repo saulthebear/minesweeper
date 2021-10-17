@@ -3,18 +3,19 @@ require_relative 'position'
 
 # Holds a grid of tiles.
 class Board
-  attr_reader :grid
+  attr_reader :grid, :height, :width
 
-  def initialize(size = 9)
-    @size = size
+  def initialize(height = 9, width = 9)
+    @height = height
+    @width = width
     create_grid
   end
 
   def create_grid
     @grid = []
-    @size.times do |row_index|
+    @height.times do |row_index|
       row = []
-      @size.times do |col_index|
+      @width.times do |col_index|
         position = Position.new(row_index, col_index)
         tile = Tile.new(self, position)
         row << tile
@@ -31,6 +32,6 @@ class Board
   end
 
   def inspect
-    "<Board: @grid:#{@size}*#{@size}>"
+    "<Board: @grid:#{@height}*#{@width}>"
   end
 end
