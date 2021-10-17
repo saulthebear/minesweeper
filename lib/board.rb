@@ -25,10 +25,41 @@ class Board
   end
 
   def render
-    @grid.each do |row|
-      puts row.map(&:to_s).join
+    print_column_index
+    @grid.each_with_index do |row, row_index|
+      puts "#{row_index} #{row.map(&:to_s).join}"
     end
     nil
+  end
+
+  # For debugging only
+  def render_bombs
+    print_column_index
+    @grid.each_with_index do |row, row_index|
+      tile_strings = row.map do |tile|
+        # debugger
+        # neighbour_bomb_count = 1
+        neighbour_bomb_count = tile.neighbour_bomb_count
+        if tile.is_bomb
+          ' X '
+        elsif neighbour_bomb_count > 0
+          " #{neighbour_bomb_count} "
+        else
+          # tile.to_s
+          ' _ '
+        end
+      end
+      puts "#{row_index} #{tile_strings.join}"
+    end
+    nil
+  end
+
+  def print_column_index
+    string = '  '
+    (0...@width).each do |col_index|
+      string += " #{col_index} "
+    end
+    puts string
   end
 
   def [](position)
