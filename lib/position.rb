@@ -9,6 +9,10 @@ class Position
     @col = col
   end
 
+  def to_s
+    "[#{@row},#{@col}]"
+  end
+
   def hash
     [@row, @col].hash
   end
