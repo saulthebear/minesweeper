@@ -31,6 +31,12 @@ class Board
     nil
   end
 
+  def [](position)
+    raise ArgumentError unless position.is_a?(Position)
+
+    @grid[position.row][position.col]
+  end
+
   def inspect
     "<Board: @grid:#{@height}*#{@width}>"
   end
