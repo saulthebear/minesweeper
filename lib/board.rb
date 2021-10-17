@@ -24,6 +24,11 @@ class Board
     end
   end
 
+  def reveal(position)
+    tile = self[position]
+    tile.reveal
+  end
+
   def render
     print_column_index
     @grid.each_with_index do |row, row_index|
