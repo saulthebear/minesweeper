@@ -25,6 +25,8 @@ class Tile
     strings[type]
   end
 
+  attr_accessor :position
+
   def initialize(board, position, difficulty)
     @board = board
     @position = position

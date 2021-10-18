@@ -15,29 +15,39 @@ class Game
     display_introduction
     1.step do |run_number|
       render(run_number)
-      valid_command = receive_command while valid_command.nil?
+      valid_command, position_played = receive_command while valid_command.nil?
       if valid_command == 1
-        render(run_number)
-        puts "BOOM!\n=== GAME OVER ==="
+        game_lost(position_played)
         break
       end
 
       if @board.win?
-        render(run_number)
-        puts "\n=== BOARD SOLVED! ==="
+        game_won
         break
       end
     end
   end
 
+  def game_lost(position_lost)
+    system('clear')
+    puts "  *** BOOM! ***\n"
+    @board.render_bombs(position_lost)
+    puts "\n=== GAME OVER ===\n".red
+  end
+
+  def game_won
+    render(1)
+    puts "\n=== BOARD SOLVED! ===".light_green
+  end
+
   def display_introduction
     system('clear')
-    puts "==== Welcome to Minesweeper! ====\n\n"
-    puts '=== INSTRUCTIONS ==='
-    puts 'Commands are one letter followed by a position, eg.'
-    puts '    r 0,4 => reveal row 0 column 4'
-    puts '    f 5,2 => flag row 5 column 2'
-    puts "\n"
+    puts "============= Welcome to Minesweeper! =============\n".red
+    puts '================== INSTRUCTIONS ==================='.yellow
+    puts 'Commands are one letter followed by a position, eg.'.yellow
+    puts '    r 0,4 => reveal row 0 column 4'.yellow
+    puts '    f 5,2 => flag row 5 column 2'.yellow
+    puts "#{'=' * 51}\n\n".yellow
   end
 
   def render(run_number)
@@ -74,9 +84,9 @@ class Game
   def process_command(command, position)
     case command
     when 'r'
-      reveal(position)
+      [reveal(position), position]
     when 'f'
-      flag(position)
+      [flag(position), position]
     end
   end
 

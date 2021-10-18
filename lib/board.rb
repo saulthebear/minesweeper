@@ -46,23 +46,34 @@ class Board
     nil
   end
 
-  # Cheat: For debugging only
-  def render_bombs
+  def render_bombs(position_lost = nil)
     print_column_index
     @grid.each_with_index do |row, row_index|
-      tile_strings = row.map do |tile|
-        neighbour_bomb_count = tile.neighbour_bomb_count
-        if tile.bomb?
-          ' X '
-        elsif neighbour_bomb_count.positive?
-          " #{neighbour_bomb_count} "
-        else
-          ' _ '
-        end
-      end
+      tile_strings = render_bombs_row(row, position_lost)
       puts "#{row_index} #{tile_strings.join}"
     end
     nil
+  end
+
+  def render_bombs_row(row, position_lost = nil) # rubocop:disable Metrics/MethodLength
+    row.map do |tile|
+      neighbour_bomb_count = tile.neighbour_bomb_count
+      if tile.flagged? && tile.bomb?
+        Tile.tile_string(:flagged)
+      elsif tile.flagged?
+        Tile.tile_string(:flagged_incorrect)
+      elsif tile.bomb? && tile.position == position_lost
+        Tile.tile_string(:exploded_bomb)
+      elsif tile.bomb?
+        Tile.tile_string(:bomb)
+      elsif tile.fringe? && tile.revealed?
+        Tile.tile_string(:fringe, neighbour_bomb_count)
+      elsif tile.revealed?
+        Tile.tile_string(:revealed)
+      else
+        Tile.tile_string(:unexplored)
+      end
+    end
   end
 
   def print_column_index
