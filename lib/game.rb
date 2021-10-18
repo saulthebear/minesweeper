@@ -24,6 +24,8 @@ class Game
         break
       when :save
         break
+      when :load
+        break
       end
 
       if @board.win?
@@ -74,7 +76,7 @@ class Game
   end
 
   def process_input(input_string)
-    if input_string == 's'
+    if %w[s l].include?(input_string)
       command = input_string
     else
       command, position_string = input_string.split(' ')
@@ -85,7 +87,7 @@ class Game
       raise(ArgumentError, 'Position Invalid') unless position.valid?(@board.width - 1, @board.height - 1)
     end
 
-    raise(ArgumentError, "`#{command}` is not a valid command") unless %w[s r f].include?(command)
+    raise(ArgumentError, "`#{command}` is not a valid command") unless %w[s l r f].include?(command)
 
     [command, position]
   end
@@ -98,7 +100,61 @@ class Game
       [flag(position), position]
     when 's'
       save_game
+    when 'l'
+      load_game
     end
+  end
+
+  def load_game
+    savegames = list_savegames
+    if savegames
+      file_index = prompt_for_savegame(savegames)
+      open_savegame(savegames[file_index])
+    else
+      puts 'Sorry, I couldn\'t find any savegames.'.yellow
+      sleep(1)
+      return :continue
+    end
+
+    :load
+  end
+
+  def prompt_for_savegame(savegames)
+    print_savegames(savegames)
+    receive_file_index(savegames.length - 1)
+  end
+
+  def open_savegame(savegame_name)
+    puts "Okay, I'll open #{savegame_name} for you."
+    loaded_game = YAML.load(File.read("savegames/#{savegame_name}"))
+    loaded_game.run
+  end
+
+  def print_savegames(savegames_found)
+    puts 'I found these savegames:'
+    savegames_found.each_with_index do |filename, index|
+      puts "#{index + 1}: #{filename}"
+    end
+  end
+
+  def receive_file_index(max_index)
+    puts 'Which one would you like to open? (enter the number on the left)'
+    print '> '
+    loop do
+      input = user_input.to_i
+      return (input - 1) if input <= (max_index + 1) && input.positive?
+
+      puts 'Invalid input. Please try again.'
+      print '> '
+    end
+  end
+
+  def list_savegames
+    return unless Dir.exist?('savegames')
+
+    Dir.entries('savegames')
+       .select { |name| name[/game-\d+\.yaml/] }
+       .sort
   end
 
   def save_game
