@@ -3,7 +3,8 @@ require_relative 'position'
 
 # Holds a grid of tiles.
 class Board
-  attr_reader :grid, :height, :width
+  attr_reader :grid #TODO: Remove. For debugging only
+  attr_reader :height, :width
 
   def initialize(height: 9, width: 9, difficulty: 12)
     @height = height
@@ -43,20 +44,17 @@ class Board
     nil
   end
 
-  # For debugging only
+  # Cheat: For debugging only
   def render_bombs
     print_column_index
     @grid.each_with_index do |row, row_index|
       tile_strings = row.map do |tile|
-        # debugger
-        # neighbour_bomb_count = 1
         neighbour_bomb_count = tile.neighbour_bomb_count
         if tile.bomb?
           ' X '
-        elsif neighbour_bomb_count > 0
+        elsif neighbour_bomb_count.positive?
           " #{neighbour_bomb_count} "
         else
-          # tile.to_s
           ' _ '
         end
       end
@@ -82,11 +80,7 @@ class Board
   def win?
     @grid.all? do |row|
       row.all? do |tile|
-        if tile.revealed? || (tile.bomb? && tile.flagged?)
-          true
-        else
-          false
-        end
+        tile.revealed? || (tile.bomb? && tile.flagged?)
       end
     end
   end

@@ -82,10 +82,6 @@ class Tile
       (min_col..max_col).each do |col_index|
         next if row_index == @position.row && col_index == @position.col
 
-        # debugger
-        # puts "Puts in neighbours_positions"
-        # puts "I am #{self.inspect}"
-        # puts "row_index: #{row_index} col_index: #{col_index}"
         pos = Position.new(row_index, col_index)
         positions << pos if pos.valid?(@board.height - 1, @board.width - 1)
       end

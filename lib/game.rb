@@ -3,6 +3,8 @@ require_relative 'position'
 
 # Holds the main game loop
 class Game
+  attr_reader :board #TODO: remove
+
   def initialize
     @board = Board.new
   end
