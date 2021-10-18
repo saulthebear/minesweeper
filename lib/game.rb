@@ -1,3 +1,4 @@
+require 'yaml'
 require 'colorize'
 
 require_relative 'board'
@@ -20,6 +21,8 @@ class Game
       case valid_command
       when :bomb
         game_lost(position_played)
+        break
+      when :save
         break
       end
 
@@ -71,14 +74,18 @@ class Game
   end
 
   def process_input(input_string)
-    command, position_string = input_string.split(' ')
-    raise ArgumentError unless command && position_string
+    if input_string == 's'
+      command = input_string
+    else
+      command, position_string = input_string.split(' ')
+      raise ArgumentError unless command && position_string
 
-    row, col = position_string.split(',').map(&:to_i)
-    position = Position.new(row, col)
-    raise(ArgumentError, 'Position Invalid') unless position.valid?(@board.width - 1, @board.height - 1)
+      row, col = position_string.split(',').map(&:to_i)
+      position = Position.new(row, col)
+      raise(ArgumentError, 'Position Invalid') unless position.valid?(@board.width - 1, @board.height - 1)
+    end
 
-    raise(ArgumentError, "`#{command}` is not a valid command") unless %w[r f].include?(command)
+    raise(ArgumentError, "`#{command}` is not a valid command") unless %w[s r f].include?(command)
 
     [command, position]
   end
@@ -89,7 +96,26 @@ class Game
       [reveal(position), position]
     when 'f'
       [flag(position), position]
+    when 's'
+      save_game
     end
+  end
+
+  def save_game
+    filename = next_filename
+    puts "Saving the game as #{filename}."
+    File.write(filename, to_yaml)
+    :save
+  end
+
+  def next_filename
+    Dir.mkdir('savegames') unless Dir.exist?('savegames')
+    filename = ''
+    1.step do |num|
+      filename = "savegames/game-#{format('%03d', num)}.yaml"
+      break unless File.exist?(filename)
+    end
+    filename
   end
 
   def user_input
@@ -103,7 +129,6 @@ class Game
   def flag(position)
     @board.flag(position)
   end
-
 end
 
 if __FILE__ == $PROGRAM_NAME
