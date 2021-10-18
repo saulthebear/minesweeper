@@ -5,8 +5,8 @@ require_relative 'position'
 class Game
   attr_reader :board #TODO: remove
 
-  def initialize
-    @board = Board.new
+  def initialize(difficulty: 12)
+    @board = Board.new(difficulty: difficulty)
   end
 
   def run
@@ -90,4 +90,9 @@ class Game
     @board.flag(position)
   end
 
+end
+
+if __FILE__ == $PROGRAM_NAME
+  g = Game.new(difficulty: 5)
+  g.run
 end
