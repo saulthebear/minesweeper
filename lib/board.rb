@@ -79,6 +79,18 @@ class Board
     @grid[position.row][position.col]
   end
 
+  def win?
+    @grid.all? do |row|
+      row.all? do |tile|
+        if tile.revealed? || (tile.bomb? && tile.flagged?)
+          true
+        else
+          false
+        end
+      end
+    end
+  end
+
   def inspect
     "<Board: @grid:#{@height}*#{@width} @difficulty:#{@difficulty}>"
   end
