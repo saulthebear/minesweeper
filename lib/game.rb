@@ -39,7 +39,7 @@ class Game
   end
 
   def render(run_number)
-    system('clear') unless run_number.zero?
+    system('clear') unless run_number == 1
     @board.render
   end
 
