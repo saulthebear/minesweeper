@@ -4,12 +4,10 @@ require_relative 'board'
 # Can be a bomb or empty.
 # User can flag or reveal a tile.
 class Tile
-  attr_reader :flagged, :revealed
-
-  def initialize(board, position)
+  def initialize(board, position, difficulty)
     @board = board
     @position = position
-    @is_bomb = should_i_be_a_bomb?
+    @is_bomb = should_i_be_a_bomb?(difficulty)
     @flagged = false
     @revealed = false
     @neighbours = nil
@@ -17,8 +15,8 @@ class Tile
 
   # Determines by random chance if this tile should be a bomb
   # Helper method for initialize
-  def should_i_be_a_bomb?
-    chance = 0.12
+  def should_i_be_a_bomb?(difficulty)
+    chance = difficulty / 100.0
     rand <= chance
   end
 
@@ -28,6 +26,14 @@ class Tile
 
   def bomb?
     @is_bomb
+  end
+
+  def flagged?
+    @flagged
+  end
+
+  def revealed?
+    @revealed
   end
 
   # Reveals to tile, so it can be displayed to the user
@@ -45,7 +51,7 @@ class Tile
     neighbours.each do |n|
       next if n.bomb?
 
-      n.reveal unless n.revealed
+      n.reveal unless n.revealed?
     end
   end
 
@@ -88,7 +94,7 @@ class Tile
   end
 
   def to_s
-    return ' * ' unless @revealed
+    return ' * ' unless revealed? || flagged?
     return ' f ' if @flagged
     return ' X ' if @is_bomb
     return " #{neighbour_bomb_count} " if fringe?
@@ -99,7 +105,7 @@ class Tile
   def inspect
     "<Tile @position: [#{@position.row},#{@position.col}]
            @is_bomb=#{@is_bomb}
-           @flagged=#{@flagged}
-           @revealed=#{@revealed}>"
+           @flagged=#{flagged?}
+           @revealed=#{revealed?}>"
   end
 end

@@ -5,9 +5,10 @@ require_relative 'position'
 class Board
   attr_reader :grid, :height, :width
 
-  def initialize(height = 9, width = 9)
+  def initialize(height: 9, width: 9, difficulty: 12)
     @height = height
     @width = width
+    @difficulty = difficulty
     create_grid
   end
 
@@ -17,7 +18,7 @@ class Board
       row = []
       @width.times do |col_index|
         position = Position.new(row_index, col_index)
-        tile = Tile.new(self, position)
+        tile = Tile.new(self, position, @difficulty)
         row << tile
       end
       @grid << row
@@ -74,6 +75,6 @@ class Board
   end
 
   def inspect
-    "<Board: @grid:#{@height}*#{@width}>"
+    "<Board: @grid:#{@height}*#{@width} @difficulty:#{@difficulty}>"
   end
 end
