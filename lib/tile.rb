@@ -62,13 +62,13 @@ class Tile
   # Reveals to tile, so it can be displayed to the user
   # If the tile is a bomb, return 1.
   def reveal
-    return 0 if @flagged
-    return 1 if @is_bomb
+    return :flagged if @flagged
+    return :bomb if @is_bomb
 
     @revealed = true
     reveal_neighbours unless fringe?
 
-    0
+    :revealed
   end
 
   def flag

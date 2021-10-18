@@ -16,7 +16,9 @@ class Game
     1.step do |run_number|
       render(run_number)
       valid_command, position_played = receive_command while valid_command.nil?
-      if valid_command == 1
+
+      case valid_command
+      when :bomb
         game_lost(position_played)
         break
       end
