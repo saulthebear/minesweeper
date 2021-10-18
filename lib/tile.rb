@@ -1,9 +1,30 @@
+require 'colorize'
 require_relative 'board'
 
 # A single tile on a board.
 # Can be a bomb or empty.
 # User can flag or reveal a tile.
 class Tile
+
+  def self.tile_string(type, neighbour_bomb_count = nil) # rubocop:disable Metrics/MethodLength
+    number_colors = {
+      1 => :light_blue, 2 => :green, 3 => :light_yellow, 4 => :magenta,
+      5 => :light_magenta, 6 => :cyan, 7 => :blue, 8 => :yellow
+    }
+
+    strings = {
+      unexplored: ' * ',
+      flagged: ' F '.light_red,
+      flagged_incorrect: ' f '.yellow,
+      bomb: ' X '.light_red,
+      exploded_bomb: ' X '.red,
+      revealed: ' _ '.light_black,
+      fringe: " #{neighbour_bomb_count} ".colorize(color: number_colors[neighbour_bomb_count])
+    }
+
+    strings[type]
+  end
+
   def initialize(board, position, difficulty)
     @board = board
     @position = position
@@ -95,12 +116,12 @@ class Tile
   end
 
   def to_s
-    return ' * ' unless revealed? || flagged?
-    return ' f ' if @flagged
-    return ' X ' if @is_bomb
-    return " #{neighbour_bomb_count} " if fringe?
+    return Tile.tile_string(:unexplored) unless revealed? || flagged?
+    return Tile.tile_string(:flagged) if @flagged
+    return Tile.tile_string(:bomb) if @is_bomb
+    return Tile.tile_string(:fringe, neighbour_bomb_count) if fringe?
 
-    ' _ ' # Normal squares if revealed
+    Tile.tile_string(:revealed)
   end
 
   def inspect

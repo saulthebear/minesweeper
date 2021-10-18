@@ -1,3 +1,5 @@
+require 'colorize'
+
 require_relative 'tile'
 require_relative 'position'
 
